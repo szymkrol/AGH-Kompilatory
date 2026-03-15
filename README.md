@@ -13,7 +13,7 @@ Skaner rozpoznaje następujące tokeny:
 | **Plus**             | `SignPlus`      | `+`                        | Znak dodawania.                                 |
 | **Minus**            | `SignMinus`     | `-`                        | Znak odejmowania.                               |
 | **Gwiazdka**         | `SignStar`      | `*`                        | Znak mnożenia.                                  |
-| **Ukośnik wsteczny** | `SignSlash`     | `\`                        | Znak dzielenia.                                 |
+| **Dzielenie**        | `SignSlash`     | `\`                        | Znak dzielenia.                                 |
 | **Nawias lewy**      | `LeftParen`     | `(`                        | Otwarcie nawiasu.                               |
 | **Nawias prawy**     | `RightParen`    | `)`                        | Zamknięcie nawiasu.                             |
 | **Liczba całkowita** | `NumberInteger` | `[0-9]+`                   | Ciąg cyfr dziesiętnych.                         |
