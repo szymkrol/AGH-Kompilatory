@@ -1,10 +1,10 @@
-# Scanner - Projekt Kompilatory
+# Scanner - projekt kompilatory
 
 
-## Język Implementacji
+## Język implementacji
 * **Język:** C++20
 
-## Zbiór tokenów (Specyfikacja)
+## Zbiór tokenów (specyfikacja)
 
 Skaner rozpoznaje następujące tokeny:
 
