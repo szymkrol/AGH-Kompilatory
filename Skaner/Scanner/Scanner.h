@@ -5,11 +5,38 @@
 #ifndef AGH_KOMPILATORY_SCANNER_H
 #define AGH_KOMPILATORY_SCANNER_H
 #include <iosfwd>
-enum class Token;
+#include <istream>
+
+class Token;
+struct Position {
+    Position() : line_(), pos_() {}
+    Position(const std::size_t& line, const std::size_t& pos) : line_(line), pos_(pos) {}
+    Position(const Position& other) : line_(other.line_), pos_(other.pos_) {}
+    std::size_t get_line() const {return line_;}
+    std::size_t get_pos() const {return pos_;}
+    std::size_t increment_line() {
+        pos_ = 0;
+        return ++line_;
+    }
+    std::size_t increment_pos() {return ++pos_;}
+private:
+    std::size_t line_;
+    std::size_t pos_;
+};
+
 
 class Scanner {
-
-    static Token scan(std::iostream str);
+private:
+    std::istream& str_;
+    char get_non_whitespace();
+    char peek() const;
+    Position position_;
+    static bool can_be_identifier_body(const char& c) {
+        return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '_' || (c >= '0' && c <= '9');
+    }
+public:
+    explicit Scanner(std::istream& str) : str_(str) {}
+    Token scan();
 
 };
 
