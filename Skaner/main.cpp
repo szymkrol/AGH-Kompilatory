@@ -11,12 +11,11 @@ int main() {
     Scanner s = Scanner (input_file);
     while (true) {
         Token t = s.scan();
+        std::cout << t << '\n';
         if (t.get_type() == TokenType::EndOfFile) {
             break;
         }
-        std::cout << t << '\n';
     }
     input_file.close();
-
     return 0;
 }

@@ -38,7 +38,7 @@ std::string Token::to_string() const {
             break;
         case TokenType::SignSlash: res += "SignSlash";
             break;
-        case TokenType::NumberInteger: res += "NumberInteger";
+        case TokenType::NumberIntegerDecimal: res += "NumberInteger";
             break;
         case TokenType::Identifier: res += "Identifier";
             break;

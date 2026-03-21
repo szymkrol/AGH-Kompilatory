@@ -35,6 +35,10 @@ private:
     static bool can_be_identifier_body(const char& c) {
         return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '_' || (c >= '0' && c <= '9');
     }
+    std::string read_whitespace();
+    std::string read_range(const char begin, const char end);
+    std::string read_float_after_decimal();
+    std::string read_until(const char c);
 public:
     explicit Scanner(std::istream& str) : str_(str) {}
     Token scan();

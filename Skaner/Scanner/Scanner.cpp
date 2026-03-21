@@ -5,6 +5,7 @@
 #include "../Scanner/Scanner.h"
 
 #include <istream>
+#include <ranges>
 
 #include "../Token.h"
 
@@ -39,7 +40,55 @@ char Scanner::get() {
     return c != std::char_traits<char>::eof() ? c : '\0';
 }
 
+std::string Scanner::read_whitespace() {
+    std::string res;
+    while (peek() != '\0' && isspace(peek())) {
+        res += get();
+    }
+    return res;
+}
+
+std::string Scanner::read_range(const char begin, const char end) {
+    std::string res;
+    while (peek() != '\0' && peek() >= begin && peek() <= end) {
+        res += get();
+    }
+    return res;
+}
+
+std::string Scanner::read_float_after_decimal() {
+    std::string res = read_range('0', '9');
+    if (peek() == 'e' || peek() == 'E') {
+        res += get();
+        if (peek() == '-' || peek() == '+') {
+            res += get();
+        } else {
+            res += '+';
+        }
+        res += read_range('0', '9');
+    }
+    if (peek() == 'f' || peek() == 'F') {
+        res += get();
+    }
+    return res;
+}
+
+std::string Scanner::read_until(const char c) {
+    std::string res;
+    while (peek() != c) {
+        res += get();
+    }
+    return res;
+}
+
 Token Scanner::scan() {
+    /*
+     * TODO:
+     * Add more operators (eg. &, <<, <=, ...)
+     * Add comments
+     * Add keywords
+     * Do all the colouring
+     */
     const auto starting_pos  = Position(position_);
     const char c = get();
     if (c == '\0') {
@@ -63,22 +112,109 @@ Token Scanner::scan() {
     if (c == ')') {
         return Token(TokenType::RightParen, ")", starting_pos);
     }
-    if (isspace(c)) {
-        std::string res;
-        res += c;
-        while (isspace(peek())) {
-            res += get();
-        }
-        return Token(TokenType::Whitespace, res, starting_pos);
+    if (c == '[') {
+        return Token(TokenType::LeftBracket, "[", starting_pos);
     }
+    if (c == ']') {
+        return Token(TokenType::RightBracket, "]", starting_pos);
+    }
+    if (c == '{') {
+        return Token(TokenType::LeftBrace, "{", starting_pos);
+    }
+    if (c == '}') {
+        return Token(TokenType::RightBrace, "}", starting_pos);
+    }
+    if (c == ',') {
+        return Token(TokenType::Comma, ",", starting_pos);
+    }
+    if (c == ';') {
+        return Token(TokenType::Semicolon, ";", starting_pos);
+    }
+    if (c == ':') {
+        if (peek() == ':') {
+            get();
+            return Token(TokenType::DoubleColon, "::", starting_pos);
+        }
+        return Token(TokenType::Colon, ":", starting_pos);
+    }
+    if (c == '.') {
+        if (peek() == '.') {
+            get();
+            if (peek() == '.') {
+                get();
+                return Token(TokenType::Ellipsis, "...", starting_pos);
+            } else {
+                return Token(TokenType::Error, "..", starting_pos);
+            }
+        } else {
+            return Token(TokenType::Dot, ".", starting_pos);
+        }
+    }
+
+    // Read whitespaces
+    if (isspace(c)) {
+        return Token(TokenType::Whitespace, c + read_whitespace(), starting_pos);
+    }
+
+    // Read numbers
     if (c >= '0' && c <= '9') {
         std::string res;
         res += c;
-        while (!isspace(peek()) && peek() != '\0' && peek() >= '0' && peek() <= '9') {
-            res += get();
+        if (c == '0') {
+            switch (peek()) {
+                case 'x':
+                case 'X':
+                    // Hexadecimal
+                    res += get();
+                    while (peek() != '\0' && ((peek() >= '0' && peek() <= '9') || (peek() >= 'a' && peek() <= 'f') || (peek() >= 'A' && peek() <= 'F'))) {
+                        res += get();
+                    }
+                    return Token(TokenType::NumberIntegerHex, res, starting_pos);
+                    break;
+                case 'b':
+                case 'B':
+                    // Binary
+                    res += get();
+                    res += read_range('0', '1');
+                    return Token(TokenType::NumberIntegerDecimal, res, starting_pos);
+                    break;
+                case '0': case '1': case '2': case '3': case '4': case '5': case '6': case '7':
+                    // Octal
+                    res += get();
+                    res += read_range('0', '7');
+                    return Token(TokenType::NumberIntegerOctal, res, starting_pos);
+                    break;
+                case '.':
+                    // Float
+                    res += get();
+                    res += read_float_after_decimal();
+                    return Token(TokenType::NumberFloat, res, starting_pos);
+                    break;
+            }
+        } else {
+            // Decimal or float
+            res += read_range('0', '9');
+            if (peek() == '.') {
+                // Float
+                res += get();
+                res += read_float_after_decimal();
+                return Token(TokenType::NumberFloat, res, starting_pos);
+            } else {
+                // Decimal
+                return Token(TokenType::NumberIntegerDecimal, res, starting_pos);
+            }
         }
-        return Token(TokenType::NumberInteger, res, starting_pos);
     }
+
+    // Char and string literals
+    if (c == '\'') {
+        return Token(TokenType::LiteralCharacter, c + read_until('\'') + get(), starting_pos);
+    }
+    if (c == '"') {
+        return Token(TokenType::LiteralString, c + read_until('"') + get(), starting_pos);
+    }
+
+
     if (can_be_identifier_body(c) && !(c >= '0' && c <= '9')) {
         std::string res;
         res += c;
