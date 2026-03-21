@@ -12,4 +12,5 @@ add_executable(AGH_Kompilatory
         FrozenPosition.h
         main.cpp
         Token.h
-        Token.cpp)
+        Token.cpp
+        HtmlHighlighter.cpp)

@@ -21,8 +21,8 @@ enum class TokenType {
     NumberFloat,
     LiteralCharacter,
     LiteralString,
-    LiteralBool, // UNMPL
-    LiteralPtr, //UNMPL
+    LiteralBool,
+    LiteralPtr,
     Identifier,
     LeftParen,
     RightParen,
@@ -39,7 +39,37 @@ enum class TokenType {
     Whitespace,
     Empty,
     EndOfFile,
-    Error
+    Error,
+    LogicalAnd,
+    Ampersand,
+    ShiftLeft,
+    LessThan,
+    ShiftRight,
+    MoreThan,
+    LessEqual,
+    MoreEqual,
+    KeywordIf,
+    KeywordElse,
+    KeywordWhile,
+    KeywordReturn,
+    KeywordFor,
+    KeywordBreak,
+    KeywordContinue,
+    KeywordSwitch,
+    KeywordCase,
+    TypeVoid,
+    TypeBoolean,
+    TypeInt,
+    TypeFloat,
+    TypeString,
+    Equal,
+    Assign,
+    NotEqual,
+    Exclamation,
+    LogicalOr,
+    Pipe,
+    Comment,
+    CommentBlock
 };
 
 class Token {
@@ -57,8 +87,8 @@ public:
     }
 
     [[nodiscard]] std::string to_string() const;
-
     [[nodiscard]] TokenType get_type() const { return type_; }
+    [[nodiscard]] std::string get_value() const { return value_; }
 
     friend std::ostream &operator<<(std::ostream &str, const Token &t) {
         str << t.to_string();

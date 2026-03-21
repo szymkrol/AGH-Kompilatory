@@ -103,7 +103,31 @@ Token Scanner::scan() {
     if (c == '*') {
         return Token(TokenType::SignStar, "*", starting_pos);
     }
-    if (c == '\\') {
+    if (c == '/') {
+        if (peek() == '/') {
+            get();
+            std::string comment_content = "//";
+            while (peek() != '\n' && peek() != '\0') {
+                comment_content += get();
+            }
+            return Token(TokenType::Comment, comment_content, starting_pos);
+        }
+
+
+        if (peek() == '*') {
+            get();
+            std::string comment_content = "/*";
+            while (peek() != '\0') {
+                char current = get();
+                comment_content += current;
+                if (current == '*' && peek() == '/') {
+                    comment_content += get();
+                    break;
+                }
+            }
+            return Token(TokenType::CommentBlock, comment_content, starting_pos);
+        }
+
         return Token(TokenType::SignSlash, "/", starting_pos);
     }
     if (c == '(') {
@@ -214,6 +238,59 @@ Token Scanner::scan() {
         return Token(TokenType::LiteralString, c + read_until('"') + get(), starting_pos);
     }
 
+    if (c == '&') {
+        if (peek() == '&') {
+            get();
+            return Token(TokenType::LogicalAnd, "&&", starting_pos);
+        }
+        return Token(TokenType::Ampersand, "&", starting_pos);
+    }
+
+    if (c == '<') {
+        if (peek() == '<') {
+            get();
+            return Token(TokenType::ShiftLeft, "<<", starting_pos);
+        }
+        if (peek() == '=') {
+            get();
+            return Token(TokenType::LessEqual, "<=", starting_pos);
+        }
+        return Token(TokenType::LessThan, "<", starting_pos);
+    }
+
+    if (c == '>') {
+        if (peek() == '>') {
+            get();
+            return Token(TokenType::ShiftRight, ">>", starting_pos);
+        }
+        if (peek() == '=') {
+            get();
+            return Token(TokenType::MoreEqual, ">=", starting_pos);
+        }
+        return Token(TokenType::MoreThan, ">", starting_pos);
+    }
+    if (c == '=') {
+        if (peek() == '=') {
+            get();
+            return Token(TokenType::Equal, "==", starting_pos);
+        }
+        return Token(TokenType::Assign, "=", starting_pos);
+    }
+    if (c == '!') {
+        if (peek() == '=') {
+            get();
+            return Token(TokenType::NotEqual, "!=", starting_pos);
+        }
+        return Token(TokenType::Exclamation, "!", starting_pos);
+    }
+    if (c == '|') {
+        if (peek() == '|') {
+            get();
+            return Token(TokenType::LogicalOr, "||", starting_pos);
+        }
+        return Token(TokenType::Pipe, "|", starting_pos);
+    }
+
 
     if (can_be_identifier_body(c) && !(c >= '0' && c <= '9')) {
         std::string res;
@@ -224,8 +301,57 @@ Token Scanner::scan() {
             } else {
                 break;
             }
-
         }
+
+        if (res == "if") {
+            return Token(TokenType::KeywordIf, res, starting_pos);
+        }
+        if (res == "else") {
+            return Token(TokenType::KeywordElse, res, starting_pos);
+        }
+        if (res == "while") {
+            return Token(TokenType::KeywordWhile, res, starting_pos);
+        }
+        if (res == "true" || res == "false") {
+            return Token(TokenType::LiteralBool, res, starting_pos);
+        }
+        if (res == "nullptr") {
+            return Token(TokenType::LiteralPtr, res, starting_pos);
+        }
+        if (res == "return") {
+            return Token(TokenType::KeywordReturn, res, starting_pos);
+        }
+        if (res == "for") {
+            return Token(TokenType::KeywordFor, res, starting_pos);
+        }
+        if (res == "break") {
+            return Token(TokenType::KeywordBreak, res, starting_pos);
+        }
+        if (res == "continue") {
+            return Token(TokenType::KeywordContinue, res, starting_pos);
+        }
+        if (res == "switch") {
+            return Token(TokenType::KeywordSwitch, res, starting_pos);
+        }
+        if (res == "case") {
+            return Token(TokenType::KeywordCase, res, starting_pos);
+        }
+        if (res == "void") {
+            return Token(TokenType::TypeVoid, "void", starting_pos);
+        }
+        if (res == "int") {
+            return Token(TokenType::TypeInt, "int", starting_pos);
+        }
+        if (res == "float") {
+            return Token(TokenType::TypeFloat, "float", starting_pos);
+        }
+        if (res == "bool") {
+            return Token(TokenType::TypeBoolean, "bool", starting_pos);
+        }
+        if (res == "string") {
+            return Token(TokenType::TypeString, "string", starting_pos);
+        }
+
         return Token(TokenType::Identifier, res, starting_pos);
     }
     return Token(TokenType::Error, "", starting_pos);
