@@ -11,7 +11,7 @@ int main() {
     Scanner s = Scanner (input_file);
     while (true) {
         Token t = s.scan();
-        if (t.get_type() == TokenType::Empty) {
+        if (t.get_type() == TokenType::EndOfFile) {
             break;
         }
         std::cout << t << '\n';

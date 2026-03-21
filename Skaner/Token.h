@@ -18,7 +18,9 @@ enum class TokenType {
     Identifier,
     LeftParen,
     RightParen,
+    Whitespace,
     Empty,
+    EndOfFile,
     Error
 };
 
@@ -28,51 +30,19 @@ private:
     const std::string value_;
     const FrozenPosition pos_;
 
+    static std::string escape_string(const std::string &str);
+
 public:
     Token() = delete;
 
     Token(const TokenType type, const std::string &value, const Position &pos) : type_(type), value_(value), pos_(pos) {
     }
 
-    std::string to_string() const {
-        std::string res = "[";
+    [[nodiscard]] std::string to_string() const;
 
-        res += "Line " + std::to_string(pos_.get_line()) + ":" + std::to_string(pos_.get_pos());
-        res += "] ";
+    [[nodiscard]] TokenType get_type() const { return type_; }
 
-        switch (type_) {
-            case TokenType::SignPlus: res += "SignPlus";
-                break;
-            case TokenType::SignMinus: res += "SignMinus";
-                break;
-            case TokenType::SignStar: res += "SignStar";
-                break;
-            case TokenType::SignSlash: res += "SignSlash";
-                break;
-            case TokenType::NumberInteger: res += "NumberInteger";
-                break;
-            case TokenType::Identifier: res += "Identifier";
-                break;
-            case TokenType::LeftParen: res += "LeftParen";
-                break;
-            case TokenType::RightParen: res += "RightParen";
-                break;
-            case TokenType::Empty: res += "Empty";
-                break;
-            case TokenType::Error: res += "Error";
-                break;
-            default: res += "Unknown";
-                break;
-        }
-
-        res += " ('" + value_ + "')";
-
-        return res;
-    }
-
-    TokenType get_type() const {return type_;}
-
-    friend std::ostream& operator<<(std::ostream& str, const Token& t) {
+    friend std::ostream &operator<<(std::ostream &str, const Token &t) {
         str << t.to_string();
         return str;
     }

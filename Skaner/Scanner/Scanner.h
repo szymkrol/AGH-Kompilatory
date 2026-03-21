@@ -30,6 +30,7 @@ private:
     std::istream& str_;
     char get_non_whitespace();
     char peek() const;
+    char get();
     Position position_;
     static bool can_be_identifier_body(const char& c) {
         return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '_' || (c >= '0' && c <= '9');
