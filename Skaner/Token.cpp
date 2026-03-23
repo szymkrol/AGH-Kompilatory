@@ -90,6 +90,8 @@ std::string Token::to_string() const {
             break;
         case TokenType::TypeString: res += "TypeString";
             break;
+        case TokenType::TypeChar: res += "TypeChar";
+            break;
         case TokenType::ShiftLeft: res += "ShiftLeft";
             break;
         case TokenType::LessEqual: res += "LessEqual";

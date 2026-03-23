@@ -62,6 +62,7 @@ enum class TokenType {
     TypeInt,
     TypeFloat,
     TypeString,
+    TypeChar,
     Equal,
     Assign,
     NotEqual,

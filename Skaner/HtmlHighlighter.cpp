@@ -58,7 +58,7 @@ private:
 
             case TokenType::TypeInt: case TokenType::TypeFloat:
             case TokenType::TypeBoolean: case TokenType::TypeVoid:
-            case TokenType::TypeString:
+            case TokenType::TypeString: case TokenType::TypeChar:
                 css_class = "type"; break;
 
             case TokenType::NumberIntegerDecimal: case TokenType::NumberIntegerHex:

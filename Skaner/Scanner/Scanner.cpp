@@ -82,13 +82,6 @@ std::string Scanner::read_until(const char c) {
 }
 
 Token Scanner::scan() {
-    /*
-     * TODO:
-     * Add more operators (eg. &, <<, <=, ...)
-     * Add comments
-     * Add keywords
-     * Do all the colouring
-     */
     const auto starting_pos  = Position(position_);
     const char c = get();
     if (c == '\0') {
@@ -232,10 +225,12 @@ Token Scanner::scan() {
 
     // Char and string literals
     if (c == '\'') {
-        return Token(TokenType::LiteralCharacter, c + read_until('\'') + get(), starting_pos);
+        const std::string tmp = read_until('\'');
+        return Token(TokenType::LiteralCharacter, c + tmp + get(), starting_pos);
     }
     if (c == '"') {
-        return Token(TokenType::LiteralString, c + read_until('"') + get(), starting_pos);
+        const std::string tmp = read_until('"');
+        return Token(TokenType::LiteralString, c + tmp + get(), starting_pos);
     }
 
     if (c == '&') {
@@ -350,6 +345,9 @@ Token Scanner::scan() {
         }
         if (res == "string") {
             return Token(TokenType::TypeString, "string", starting_pos);
+        }
+        if (res == "char") {
+            return Token(TokenType::TypeChar, "char", starting_pos);
         }
 
         return Token(TokenType::Identifier, res, starting_pos);

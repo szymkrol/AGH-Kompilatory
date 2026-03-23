@@ -7,8 +7,7 @@
 //
 // Created by Szymon Król on 12.03.2026.
 //
-int main() {
-    std::ifstream input_file("../ex.txt");
+int main() {std::ifstream input_file("../ex.txt");
     std::ifstream input_file_HTML("../exHTML.txt");
     Scanner s = Scanner (input_file);
     Scanner sHTML = Scanner (input_file_HTML);
@@ -21,5 +20,6 @@ int main() {
         }
     }
     input_file.close();
+    input_file_HTML.close();
     return 0;
 }
